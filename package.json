@@ -1,0 +1,25 @@
+{
+  "name": "fluid-motion-monorepo",
+  "private": true,
+  "author": "Dipesh Rai",
+  "license": "MIT",
+  "description": "Simple and powerful react animation library",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@nrwl/nx-cloud": "^14.7.0",
+    "@types/react": "^18.0.21",
+    "@types/react-dom": "^18.0.6",
+    "lerna": "^5.5.4",
+    "nx": "^14.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "scripts": {
+    "start:dev": "lerna run start --scope=example",
+    "start": "lerna run start --scope=fluid-motion",
+    "build": "lerna run build --scope=fluid-motion",
+    "test": "lerna run test --scope=fluid-motion"
+  }
+}
