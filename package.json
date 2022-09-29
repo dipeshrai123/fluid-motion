@@ -5,7 +5,8 @@
   "license": "MIT",
   "description": "Simple and powerful react animation library",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "example"
   ],
   "devDependencies": {
     "@nrwl/nx-cloud": "^14.7.0",
