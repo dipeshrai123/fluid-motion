@@ -84,7 +84,11 @@ export class SpringAnimation extends Animation {
     this.onUpdate();
   };
 
-  getInternalState(): { lastPosition: any; lastVelocity: any; lastTime: any } {
+  getInternalState(): {
+    lastPosition: number;
+    lastVelocity: number;
+    lastTime: number;
+  } {
     return {
       lastPosition: this._lastPosition,
       lastVelocity: this._lastVelocity,
