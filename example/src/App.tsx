@@ -1,4 +1,9 @@
-import { createAnimatedComponent, AnimatedValue, timing } from "fluid-motion";
+import {
+  createAnimatedComponent,
+  AnimatedValue,
+  timing,
+  spring,
+} from "fluid-motion";
 import { useRef } from "react";
 
 const ADiv = createAnimatedComponent("div");
@@ -12,13 +17,16 @@ function App() {
         style={{
           width: 100,
           height: 100,
-          backgroundColor: "red",
+          backgroundColor: opacity.interpolate({
+            inputRange: [0, 1],
+            outputRange: ["red", "black"],
+          }),
           position: "relative",
-          opacity,
+          left: opacity,
         }}
       />
 
-      <button onClick={() => timing(opacity, { toValue: 1 }).start()}>
+      <button onClick={() => spring(opacity, { toValue: 100 }).start()}>
         ANIMTE
       </button>
     </>
