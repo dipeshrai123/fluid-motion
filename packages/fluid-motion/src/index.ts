@@ -1,1 +1,1 @@
-console.log("PACKAGE INIT");
+export * from "./animated";
