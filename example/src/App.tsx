@@ -26,7 +26,7 @@ function App() {
         }}
       />
 
-      <button onClick={() => spring(opacity, { toValue: 100 }).start()}>
+      <button onClick={() => spring(opacity, { toValue: 500 }).start()}>
         ANIMTE
       </button>
     </>

@@ -44,6 +44,7 @@ type SpringAnimationConfig = AnimationConfig & {
   speed?: number;
   tension?: number;
   friction?: number;
+  mass?: number;
 };
 
 const spring = function (

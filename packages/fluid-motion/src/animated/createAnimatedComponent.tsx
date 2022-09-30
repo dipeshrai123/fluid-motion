@@ -4,6 +4,7 @@ import React, {
   useCallback,
   MutableRefObject,
   useState,
+  useEffect,
 } from "react";
 import { AnimatedProps } from "./AnimatedProps";
 import { ApplyAnimatedValues } from "./injectable/ApplyAnimatedValues";
@@ -16,6 +17,7 @@ function useForceUpdate() {
 
 export function createAnimatedComponent(Component: any): any {
   function Wrapper(props: any, _ref: any) {
+    const mounted = useRef(true);
     const node = useRef<any>(null);
     const forceUpdate = useForceUpdate();
     const propsAnimated: MutableRefObject<AnimatedProps | null> = useRef(null);
@@ -36,6 +38,13 @@ export function createAnimatedComponent(Component: any): any {
       };
       propsAnimated.current = new AnimatedProps(props, callback);
       oldPropsAnimated && oldPropsAnimated.__detach();
+    }, []);
+
+    useEffect(() => {
+      return () => {
+        mounted.current = false;
+        propsAnimated.current && propsAnimated.current.__detach();
+      };
     }, []);
 
     attachProps(props);
