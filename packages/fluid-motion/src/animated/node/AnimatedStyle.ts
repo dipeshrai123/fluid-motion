@@ -1,14 +1,14 @@
 import { Animated } from "./Animated";
 import { AnimatedTransform } from "./AnimatedTransform";
 import { AnimatedWithChildren } from "./AnimatedWithChildren";
-import { FlattenStyle } from "./injectable/FlattenStyle";
+import * as Global from "../global";
 
 export class AnimatedStyle extends AnimatedWithChildren {
   _style: Object;
 
   constructor(style: any) {
     super();
-    style = FlattenStyle.current(style) || {};
+    style = Global.flattenStyle.current(style) || {};
     if (style.transform && !(style.transform instanceof Animated)) {
       style = {
         ...style,

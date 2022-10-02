@@ -1,9 +1,8 @@
+import { uniqueId } from "../guid";
 import { Animated } from "./Animated";
 import { AnimatedInterpolation } from "./AnimatedInterpolation";
 import { AnimatedWithChildren } from "./AnimatedWithChildren";
 import { Animation, EndCallback } from "./Animation";
-import { uniqueId } from "./guid";
-import { InteractionManager } from "./injectable/InteractionManager";
 import { Interpolation, InterpolationConfigType } from "./Interpolation";
 
 export type ValueListenerCallback = (state: { value: string | number }) => void;
@@ -124,10 +123,6 @@ export class AnimatedValue extends AnimatedWithChildren {
    * class.
    */
   animate(animation: Animation, callback?: EndCallback): void {
-    var handle: any = null;
-    if (animation.__isInteraction) {
-      handle = InteractionManager.current.createInteractionHandle();
-    }
     var previousAnimation = this._animation;
     this._animation && this._animation.stop();
     this._animation = animation;
@@ -138,9 +133,6 @@ export class AnimatedValue extends AnimatedWithChildren {
       },
       (result) => {
         this._animation = null;
-        if (handle !== null) {
-          InteractionManager.current.clearInteractionHandle(handle);
-        }
         callback && callback(result);
       },
       previousAnimation

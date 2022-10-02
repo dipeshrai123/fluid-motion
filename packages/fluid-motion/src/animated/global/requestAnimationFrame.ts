@@ -1,13 +1,13 @@
-export const RequestAnimationFrame = {
+export const requestAnimationFrame = {
   current: (cb: any) => window.requestAnimationFrame(cb),
   inject(injected: any) {
-    RequestAnimationFrame.current = injected;
+    requestAnimationFrame.current = injected;
   },
 };
 
-export const CancelAnimationFrame = {
+export const cancelAnimationFrame = {
   current: (id: any) => window.cancelAnimationFrame(id),
   inject(injected: any) {
-    CancelAnimationFrame.current = injected;
+    cancelAnimationFrame.current = injected;
   },
 };

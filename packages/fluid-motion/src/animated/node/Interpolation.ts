@@ -1,4 +1,4 @@
-import { normalizeColor } from "./normalizeColor";
+import { normalizeColor } from "../normalizeColor";
 
 type ExtrapolateType = "extend" | "identity" | "clamp";
 

@@ -1,11 +1,8 @@
+import * as Global from "../global";
 import { AnimatedValue } from "./AnimatedValue";
-import { Animation, AnimationConfig, EndCallback } from "./Animation";
-import {
-  CancelAnimationFrame,
-  RequestAnimationFrame,
-} from "./injectable/RequestAnimationFrame";
+import { Animation, EndCallback } from "./Animation";
 
-type SpringAnimationConfigSingle = AnimationConfig & {
+type SpringAnimationConfigSingle = {
   toValue: number | AnimatedValue;
   overshootClamping?: boolean;
   restDisplacementThreshold?: number;
@@ -54,8 +51,6 @@ export class SpringAnimation extends Animation {
     this._initialVelocity = config.velocity;
     this._lastVelocity = withDefault(config.velocity, 0);
     this._toValue = config.toValue;
-    this.__isInteraction =
-      config.isInteraction !== undefined ? config.isInteraction : true;
     this._tension = withDefault(config.tension, 160);
     this._friction = withDefault(config.friction, 14);
     this._mass = withDefault(config.mass, 1);
@@ -184,14 +179,14 @@ export class SpringAnimation extends Animation {
       return;
     }
 
-    this._animationFrame = RequestAnimationFrame.current(
+    this._animationFrame = Global.requestAnimationFrame.current(
       this.onUpdate.bind(this)
     );
   }
 
   stop(): void {
     this.__active = false;
-    CancelAnimationFrame.current(this._animationFrame);
+    Global.cancelAnimationFrame.current(this._animationFrame);
     this.__debouncedOnEnd({ finished: false });
   }
 }

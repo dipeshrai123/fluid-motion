@@ -1,6 +1,6 @@
-export const FlattenStyle = {
+export const flattenStyle = {
   current: (style: any) => style,
   inject(flatten: any) {
-    FlattenStyle.current = flatten;
+    flattenStyle.current = flatten;
   },
 };

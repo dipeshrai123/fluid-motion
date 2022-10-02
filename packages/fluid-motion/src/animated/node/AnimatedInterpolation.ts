@@ -2,7 +2,7 @@ import { Animated } from "./Animated";
 import { AnimatedWithChildren } from "./AnimatedWithChildren";
 import { Interpolation, InterpolationConfigType } from "./Interpolation";
 import { ValueListenerCallback } from "./AnimatedValue";
-import { uniqueId } from "./guid";
+import { uniqueId } from "../guid";
 
 export class AnimatedInterpolation extends AnimatedWithChildren {
   _parent: any;

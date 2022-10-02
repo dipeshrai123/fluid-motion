@@ -19,7 +19,7 @@ const attributeCache: { [key: string]: string } = {};
 
 type Instance = HTMLDivElement & { style: any; [key: string]: any };
 
-export const ApplyAnimatedValues = {
+export const applyAnimatedValues = {
   current: function ApplyAnimatedValues(
     instance: Instance,
     props: { [key: string]: any }
@@ -80,8 +80,8 @@ export const ApplyAnimatedValues = {
     return style;
   },
   inject(apply: any, transform: any) {
-    ApplyAnimatedValues.current = apply;
-    ApplyAnimatedValues.transformStyles = transform;
+    applyAnimatedValues.current = apply;
+    applyAnimatedValues.transformStyles = transform;
   },
 };
 

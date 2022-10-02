@@ -1,10 +1,10 @@
 import React, { useRef, forwardRef, useCallback, useLayoutEffect } from "react";
 import { isFunction, useForceUpdate } from "./helpers";
-import { AnimatedProps } from "./AnimatedProps";
-import { ApplyAnimatedValues } from "./injectable/ApplyAnimatedValues";
+import { AnimatedProps } from "./node/AnimatedProps";
+import * as Global from "./global";
 
 export function createAnimatedComponent(Component: any): any {
-  return forwardRef((props: any, _ref: React.Ref<any>) => {
+  return forwardRef((props: any, ref: React.Ref<any>) => {
     const instanceRef = useRef<any>(null);
     const hasInstance: boolean =
       !isFunction(Component) || Component.prototype.isReactComponent;
@@ -19,7 +19,7 @@ export function createAnimatedComponent(Component: any): any {
 
         if (animatedProps.current) {
           const didUpdate = instance
-            ? ApplyAnimatedValues.current(
+            ? Global.applyAnimatedValues.current(
                 instance,
                 animatedProps.current.__getValue()
               )
@@ -42,8 +42,19 @@ export function createAnimatedComponent(Component: any): any {
 
     return (
       <Component
-        ref={hasInstance && ((value: any) => (instanceRef.current = value))}
+        ref={
+          hasInstance &&
+          ((value: any) => (instanceRef.current = updateRef(ref, value)))
+        }
       />
     );
   });
+}
+
+function updateRef<T>(ref: React.Ref<T>, value: T) {
+  if (ref) {
+    if (isFunction(ref)) ref(value);
+    else (ref as any).current = value;
+  }
+  return value;
 }

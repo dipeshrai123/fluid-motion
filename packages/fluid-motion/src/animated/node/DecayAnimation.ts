@@ -1,10 +1,7 @@
-import { Animation, AnimationConfig, EndCallback } from "./Animation";
-import {
-  CancelAnimationFrame,
-  RequestAnimationFrame,
-} from "./injectable/RequestAnimationFrame";
+import * as Global from "../global";
+import { Animation, EndCallback } from "./Animation";
 
-type DecayAnimationConfigSingle = AnimationConfig & {
+type DecayAnimationConfigSingle = {
   velocity: number;
   deceleration?: number;
 };
@@ -23,8 +20,6 @@ export class DecayAnimation extends Animation {
     this._deceleration =
       config.deceleration !== undefined ? config.deceleration : 0.998;
     this._velocity = config.velocity;
-    this.__isInteraction =
-      config.isInteraction !== undefined ? config.isInteraction : true;
   }
 
   start = (
@@ -38,7 +33,7 @@ export class DecayAnimation extends Animation {
     this._onUpdate = onUpdate;
     this.__onEnd = onEnd;
     this._startTime = Date.now();
-    this._animationFrame = RequestAnimationFrame.current(
+    this._animationFrame = Global.requestAnimationFrame.current(
       this.onUpdate.bind(this)
     );
   };
@@ -60,7 +55,7 @@ export class DecayAnimation extends Animation {
 
     this._lastValue = value;
     if (this.__active) {
-      this._animationFrame = RequestAnimationFrame.current(
+      this._animationFrame = Global.requestAnimationFrame.current(
         this.onUpdate.bind(this)
       );
     }
@@ -68,7 +63,7 @@ export class DecayAnimation extends Animation {
 
   stop(): void {
     this.__active = false;
-    CancelAnimationFrame.current(this._animationFrame);
+    Global.cancelAnimationFrame.current(this._animationFrame);
     this.__debouncedOnEnd({ finished: false });
   }
 }

@@ -1,14 +1,11 @@
+import { Easing } from "../Easing";
+import * as Global from "../global";
 import { AnimatedValue } from "./AnimatedValue";
-import { Animation, AnimationConfig, EndCallback } from "./Animation";
-import { Easing } from "./Easing";
-import {
-  CancelAnimationFrame,
-  RequestAnimationFrame,
-} from "./injectable/RequestAnimationFrame";
+import { Animation, EndCallback } from "./Animation";
 
 var easeInOut = Easing.inOut(Easing.ease);
 
-type TimingAnimationConfigSingle = AnimationConfig & {
+type TimingAnimationConfigSingle = {
   toValue: number | AnimatedValue;
   easing?: (value: number) => number;
   duration?: number;
@@ -32,8 +29,6 @@ export class TimingAnimation extends Animation {
     this._easing = config.easing !== undefined ? config.easing : easeInOut;
     this._duration = config.duration !== undefined ? config.duration : 500;
     this._delay = config.delay !== undefined ? config.delay : 0;
-    this.__isInteraction =
-      config.isInteraction !== undefined ? config.isInteraction : true;
   }
 
   start = (
@@ -52,7 +47,7 @@ export class TimingAnimation extends Animation {
         this.__debouncedOnEnd({ finished: true });
       } else {
         this._startTime = Date.now();
-        this._animationFrame = RequestAnimationFrame.current(
+        this._animationFrame = Global.requestAnimationFrame.current(
           this.onUpdate.bind(this)
         );
       }
@@ -85,7 +80,7 @@ export class TimingAnimation extends Animation {
     );
 
     if (this.__active) {
-      this._animationFrame = RequestAnimationFrame.current(
+      this._animationFrame = Global.requestAnimationFrame.current(
         this.onUpdate.bind(this)
       );
     }
@@ -94,7 +89,7 @@ export class TimingAnimation extends Animation {
   stop(): void {
     this.__active = false;
     clearTimeout(this._timeout);
-    CancelAnimationFrame.current(this._animationFrame);
+    Global.cancelAnimationFrame.current(this._animationFrame);
     this.__debouncedOnEnd({ finished: false });
   }
 }
