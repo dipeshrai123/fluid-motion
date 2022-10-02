@@ -51,8 +51,8 @@ export class SpringAnimation extends Animation {
     this._initialVelocity = config.velocity;
     this._lastVelocity = withDefault(config.velocity, 0);
     this._toValue = config.toValue;
-    this._tension = withDefault(config.tension, 160);
-    this._friction = withDefault(config.friction, 14);
+    this._tension = withDefault(config.tension, 180);
+    this._friction = withDefault(config.friction, 18);
     this._mass = withDefault(config.mass, 1);
   }
 

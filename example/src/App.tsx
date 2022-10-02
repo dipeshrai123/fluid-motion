@@ -1,5 +1,4 @@
 import { createAnimatedComponent, AnimatedValue, spring } from "fluid-motion";
-import { useDrag } from "@use-gesture/react";
 import { useRef } from "react";
 
 const ADiv = createAnimatedComponent("div");
@@ -7,14 +6,10 @@ const ADiv = createAnimatedComponent("div");
 function App() {
   const aleft = useRef(new AnimatedValue(0)).current;
 
-  const bind = useDrag(({ movement: [mx] }) => {
-    spring(aleft, { toValue: mx }).start();
-  });
-
   return (
     <>
       <div
-        {...bind()}
+        onClick={() => spring(aleft, { toValue: 500 }).start()}
         style={{
           height: 100,
           background: "#e1e1e1",
@@ -28,12 +23,12 @@ function App() {
       </div>
       <ADiv
         style={{
-          width: 100,
-          height: 100,
-          backgroundColor: aleft.interpolate({
+          width: aleft.interpolate({
             inputRange: [0, 500],
-            outputRange: ["red", "black"],
+            outputRange: [100, 200],
           }),
+          height: 100,
+          backgroundColor: "#3399ff",
           position: "relative",
           left: aleft,
         }}
