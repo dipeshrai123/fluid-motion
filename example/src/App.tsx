@@ -9,16 +9,24 @@ import {
   delay,
   stagger,
 } from "fluid-motion";
+import A from "animated";
 import { useDrag } from "@use-gesture/react";
 import { useRef } from "react";
 
 const ADiv = createAnimatedComponent("div");
+const BDiv = A.createAnimatedComponent("div");
 
 function App() {
-  const left = useRef(new AnimatedValue(0)).current;
+  const aleft = useRef(new AnimatedValue(0)).current;
+  const aleftFollow = useRef(new AnimatedValue(0)).current;
+  const bleft = useRef(new A.Value(0)).current;
+  const bleftFollow = useRef(new A.Value(0)).current;
 
   const bind = useDrag(({ movement: [mx] }) => {
-    spring(left, { toValue: mx }).start();
+    spring(aleft, { toValue: mx }).start();
+    spring(aleftFollow, { toValue: aleft }).start();
+    A.spring(bleft, { toValue: mx }).start();
+    A.spring(bleftFollow, { toValue: bleft }).start();
   });
 
   return (
@@ -31,26 +39,44 @@ function App() {
         style={{
           width: 100,
           height: 100,
-          backgroundColor: left.interpolate({
+          backgroundColor: aleft.interpolate({
             inputRange: [0, 1],
             outputRange: ["red", "black"],
           }),
           position: "relative",
-          left: left,
+          left: aleft,
         }}
       />
-
-      <button
-        onClick={() =>
-          sequence([
-            delay(1000),
-            spring(left, { toValue: 200 }),
-            timing(left, { toValue: 500 }),
-          ]).start()
-        }
-      >
-        ANIMTE
-      </button>
+      <ADiv
+        style={{
+          width: 100,
+          height: 100,
+          backgroundColor: "#3399ff",
+          position: "relative",
+          left: aleftFollow,
+        }}
+      />
+      <BDiv
+        style={{
+          width: 100,
+          height: 100,
+          backgroundColor: bleft.interpolate({
+            inputRange: [0, 1],
+            outputRange: ["red", "black"],
+          }),
+          position: "relative",
+          left: bleft,
+        }}
+      />
+      <BDiv
+        style={{
+          width: 100,
+          height: 100,
+          backgroundColor: "#3399ff",
+          position: "relative",
+          left: bleftFollow,
+        }}
+      />
     </>
   );
 }

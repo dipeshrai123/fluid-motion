@@ -1,63 +1,49 @@
-import React, {
-  useRef,
-  forwardRef,
-  useCallback,
-  MutableRefObject,
-  useState,
-  useEffect,
-} from "react";
+import React, { useRef, forwardRef, useCallback, useLayoutEffect } from "react";
+import { isFunction, useForceUpdate } from "./helpers";
 import { AnimatedProps } from "./AnimatedProps";
 import { ApplyAnimatedValues } from "./injectable/ApplyAnimatedValues";
 
-function useForceUpdate() {
-  const [, f] = useState(false);
-  const forceUpdate = useCallback(() => f((v) => !v), []);
-  return forceUpdate;
-}
-
 export function createAnimatedComponent(Component: any): any {
-  function Wrapper(props: any, _ref: any) {
-    const mounted = useRef(true);
-    const node = useRef<any>(null);
+  return forwardRef((props: any, _ref: React.Ref<any>) => {
+    const instanceRef = useRef<any>(null);
+    const hasInstance: boolean =
+      !isFunction(Component) || Component.prototype.isReactComponent;
+    const animatedProps = useRef<AnimatedProps | null>(null);
     const forceUpdate = useForceUpdate();
-    const propsAnimated: MutableRefObject<AnimatedProps | null> = useRef(null);
 
-    const attachProps = useCallback((props: any) => {
-      const oldPropsAnimated = propsAnimated.current;
+    const attachProps = useCallback(() => {
+      const oldAnimatedProps = animatedProps.current;
+
       const callback = () => {
-        let didUpdate: false | undefined = false;
-        if (node.current) {
-          didUpdate = ApplyAnimatedValues.current(
-            node.current,
-            propsAnimated.current!.__getAnimatedValue()
-          );
-        }
-        if (!node.current || didUpdate === false) {
-          forceUpdate();
+        const instance = instanceRef.current;
+
+        if (animatedProps.current) {
+          const didUpdate = instance
+            ? ApplyAnimatedValues.current(
+                instance,
+                animatedProps.current.__getValue()
+              )
+            : false;
+
+          if (!didUpdate) {
+            forceUpdate();
+          }
         }
       };
-      propsAnimated.current = new AnimatedProps(props, callback);
-      oldPropsAnimated && oldPropsAnimated.__detach();
+
+      callback(); // apply the props on first render
+      animatedProps.current = new AnimatedProps(props, callback);
+      oldAnimatedProps && oldAnimatedProps.__detach();
     }, []);
 
-    useEffect(() => {
-      return () => {
-        mounted.current = false;
-        propsAnimated.current && propsAnimated.current.__detach();
-      };
+    useLayoutEffect(() => {
+      attachProps();
     }, []);
-
-    attachProps(props);
-
-    const animatedProps = propsAnimated.current?.__getValue();
 
     return (
       <Component
-        ref={(childRef: any) => (node.current = childRef)}
-        {...animatedProps}
+        ref={hasInstance && ((value: any) => (instanceRef.current = value))}
       />
     );
-  }
-
-  return forwardRef(Wrapper);
+  });
 }
