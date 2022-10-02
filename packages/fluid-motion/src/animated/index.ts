@@ -4,6 +4,8 @@ import { TimingAnimation } from "./TimingAnimation";
 import { createAnimatedComponent } from "./createAnimatedComponent";
 import { SpringAnimation } from "./SpringAnimation";
 import { DecayAnimation } from "./DecayAnimation";
+import { Animated } from "./Animated";
+import { AnimatedTracking } from "./AnimatedTracking";
 
 type CompositeAnimation = {
   start: (callback?: EndCallback | null) => void;
@@ -22,11 +24,23 @@ const timing = function (
   config: TimingAnimationConfig
 ): CompositeAnimation {
   return {
-    start: function (callback: EndCallback | null): void {
-      const singleValue = value;
-      const singleConfig = config;
+    start: function (callback?: EndCallback): void {
+      var singleValue: any = value;
+      var singleConfig: any = config;
       singleValue.stopTracking();
-      singleValue.animate(new TimingAnimation(singleConfig), callback);
+      if (config.toValue instanceof Animated) {
+        singleValue.track(
+          new AnimatedTracking(
+            singleValue,
+            config.toValue,
+            TimingAnimation,
+            singleConfig,
+            callback
+          )
+        );
+      } else {
+        singleValue.animate(new TimingAnimation(singleConfig), callback);
+      }
     },
 
     stop: function (): void {
@@ -53,13 +67,26 @@ const spring = function (
   config: SpringAnimationConfig
 ): CompositeAnimation {
   return {
-    start: function (callback: EndCallback) {
-      const singleValue = value;
-      const singleConfig = config;
+    start: function (callback?: EndCallback): void {
+      var singleValue: any = value;
+      var singleConfig: any = config;
       singleValue.stopTracking();
-      singleValue.animate(new SpringAnimation(singleConfig), callback);
+      if (config.toValue instanceof Animated) {
+        singleValue.track(
+          new AnimatedTracking(
+            singleValue,
+            config.toValue,
+            SpringAnimation,
+            singleConfig,
+            callback
+          )
+        );
+      } else {
+        singleValue.animate(new SpringAnimation(singleConfig), callback);
+      }
     },
-    stop: function () {
+
+    stop: function (): void {
       value.stopAnimation();
     },
   };

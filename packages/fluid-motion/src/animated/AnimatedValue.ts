@@ -123,7 +123,7 @@ export class AnimatedValue extends AnimatedWithChildren {
    * Typically only used internally, but could be used by a custom Animation
    * class.
    */
-  animate(animation: Animation, callback: EndCallback | null): void {
+  animate(animation: Animation, callback?: EndCallback): void {
     var handle: any = null;
     if (animation.__isInteraction) {
       handle = InteractionManager.current.createInteractionHandle();
