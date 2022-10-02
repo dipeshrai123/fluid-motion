@@ -1,14 +1,4 @@
-import {
-  createAnimatedComponent,
-  AnimatedValue,
-  timing,
-  spring,
-  decay,
-  parallel,
-  sequence,
-  delay,
-  stagger,
-} from "fluid-motion";
+import { createAnimatedComponent, AnimatedValue, spring } from "fluid-motion";
 import A from "animated";
 import { useDrag } from "@use-gesture/react";
 import { useRef } from "react";
