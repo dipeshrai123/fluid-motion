@@ -4,7 +4,7 @@ import { AnimatedWithChildren } from "./AnimatedWithChildren";
 import * as Global from "../global";
 
 export class AnimatedStyle extends AnimatedWithChildren {
-  _style: Object;
+  _style: object;
 
   constructor(style: any) {
     super();

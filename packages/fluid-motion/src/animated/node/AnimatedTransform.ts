@@ -2,14 +2,14 @@ import { Animated } from "./Animated";
 import { AnimatedWithChildren } from "./AnimatedWithChildren";
 
 export class AnimatedTransform extends AnimatedWithChildren {
-  _transforms: Array<Object>;
+  _transforms: Array<object>;
 
-  constructor(transforms: Array<Object>) {
+  constructor(transforms: Array<object>) {
     super();
     this._transforms = transforms;
   }
 
-  __getValue = (): Array<Object> => {
+  __getValue = (): Array<object> => {
     return this._transforms.map((transform) => {
       var result = {};
       for (var key in transform) {
@@ -24,7 +24,7 @@ export class AnimatedTransform extends AnimatedWithChildren {
     });
   };
 
-  __getAnimatedValue = (): Array<Object> => {
+  __getAnimatedValue = (): Array<object> => {
     return this._transforms.map((transform) => {
       var result = {};
       for (var key in transform) {
