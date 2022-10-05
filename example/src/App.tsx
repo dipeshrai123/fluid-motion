@@ -22,6 +22,7 @@ function App() {
         DRAG MOUSE HERE
       </div>
       <ADiv
+        ref={(re) => console.log(re)}
         style={{
           width: aleft.interpolate({
             inputRange: [0, 500],
@@ -31,6 +32,7 @@ function App() {
           backgroundColor: "#3399ff",
           position: "relative",
           left: aleft,
+          display: "flex",
         }}
       />
     </>

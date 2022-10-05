@@ -1,60 +1,97 @@
-import React, { useRef, forwardRef, useCallback, useLayoutEffect } from "react";
-import { isFunction, useForceUpdate } from "./helpers";
+import React, {
+  useRef,
+  forwardRef,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  createElement,
+} from "react";
+
 import { AnimatedProps } from "./node/AnimatedProps";
+import { Animated } from "./node/Animated";
+import { isFunction, updateRef, useForceUpdate } from "./helpers";
 import * as Global from "./global";
 
-export function createAnimatedComponent(Component: any): any {
-  return forwardRef((props: any, ref: React.Ref<any>) => {
-    const instanceRef = useRef<any>(null);
-    const hasInstance: boolean =
-      !isFunction(Component) || Component.prototype.isReactComponent;
-    const animatedProps = useRef<AnimatedProps | null>(null);
-    const forceUpdate = useForceUpdate();
+type AnimatableComponent = React.ElementType | React.ComponentType<any>;
 
-    const attachProps = useCallback(() => {
-      const oldAnimatedProps = animatedProps.current;
+type AnimatableComponentProps<T extends AnimatableComponent> = Omit<
+  {
+    [property in keyof React.ComponentPropsWithoutRef<T>]:
+      | React.ComponentPropsWithoutRef<T>[property]
+      | Animated;
+  },
+  "style"
+> & {
+  style?: {
+    [key in keyof React.CSSProperties]: React.CSSProperties[key] | Animated;
+  };
+};
 
-      const callback = () => {
-        const instance = instanceRef.current;
+export function createAnimatedComponent<C extends AnimatableComponent>(
+  Component: C
+) {
+  const hasInstance: boolean =
+    !isFunction(Component) || Component.prototype.isReactComponent;
 
-        if (animatedProps.current) {
-          const didUpdate = instance
-            ? Global.applyAnimatedValues.current(
-                instance,
-                animatedProps.current.__getValue()
-              )
-            : false;
+  return forwardRef(
+    (props: AnimatableComponentProps<C>, forwardedRef: React.Ref<C>) => {
+      const instanceRef = useRef<any>(null);
 
-          if (!didUpdate) {
-            forceUpdate();
+      const ref =
+        hasInstance &&
+        useCallback(
+          (value: any) => {
+            instanceRef.current = updateRef(forwardedRef, value);
+          },
+          [forwardedRef]
+        );
+
+      const animatedProps = useRef<AnimatedProps | null>(null);
+      const forceUpdate = useForceUpdate();
+
+      const attachProps = useCallback(() => {
+        const oldAnimatedProps = animatedProps.current;
+
+        const callback = () => {
+          const instance = instanceRef.current;
+
+          if (hasInstance && !instance) {
+            return;
           }
-        }
-      };
 
-      callback(); // apply the props on first render
-      animatedProps.current = new AnimatedProps(props, callback);
-      oldAnimatedProps && oldAnimatedProps.__detach();
-    }, []);
+          if (animatedProps.current) {
+            const didUpdate = instance
+              ? Global.applyAnimatedValues.current(
+                  instance,
+                  animatedProps.current.__getValue()
+                )
+              : false;
 
-    useLayoutEffect(() => {
-      attachProps();
-    }, []);
+            // force re-render when the instance is not available
+            if (didUpdate === false) {
+              forceUpdate();
+            }
+          }
+        };
 
-    return (
-      <Component
-        ref={
-          hasInstance &&
-          ((value: any) => (instanceRef.current = updateRef(ref, value)))
-        }
-      />
-    );
-  });
-}
+        animatedProps.current = new AnimatedProps(props, callback);
+        oldAnimatedProps && oldAnimatedProps.__detach();
+      }, []);
 
-function updateRef<T>(ref: React.Ref<T>, value: T) {
-  if (ref) {
-    if (isFunction(ref)) ref(value);
-    else (ref as any).current = value;
-  }
-  return value;
+      useLayoutEffect(() => {
+        attachProps();
+      }, []);
+
+      /**
+       * TODO: - create a custom function to retrieve the props
+       * rather than using new AnimatedProps node ( creating new instance )
+       */
+      const initialProps = useMemo(
+        () => new AnimatedProps(props, () => false).__getValue(),
+        [props]
+      );
+
+      return createElement(Component, { ...initialProps, ref });
+    }
+  );
 }

@@ -10,3 +10,12 @@ export function useForceUpdate() {
   const forceUpdate = useCallback(() => f((v) => !v), []);
   return forceUpdate;
 }
+
+// Merges two refs
+export function updateRef<T>(ref: React.Ref<T>, value: T) {
+  if (ref) {
+    if (isFunction(ref)) ref(value);
+    else (ref as any).current = value;
+  }
+  return value;
+}
