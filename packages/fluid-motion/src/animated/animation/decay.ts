@@ -19,7 +19,6 @@ export const decay = function (
       singleValue.stopTracking();
       singleValue.animate(new DecayAnimation(singleConfig), callback);
     },
-
     stop: function (): void {
       value.stopAnimation();
     },

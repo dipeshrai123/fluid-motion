@@ -35,7 +35,6 @@ export const timing = function (
         singleValue.animate(new TimingAnimation(singleConfig), callback);
       }
     },
-
     stop: function (): void {
       value.stopAnimation();
     },

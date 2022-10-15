@@ -29,7 +29,6 @@ export const sequence = function (
         animations[current].start(onComplete);
       }
     },
-
     stop: function () {
       if (current < animations.length) {
         animations[current].stop();

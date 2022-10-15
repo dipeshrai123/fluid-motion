@@ -41,7 +41,6 @@ export const spring = function (
         singleValue.animate(new SpringAnimation(singleConfig), callback);
       }
     },
-
     stop: function (): void {
       value.stopAnimation();
     },

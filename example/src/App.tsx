@@ -5,11 +5,15 @@ const ADiv = createAnimatedComponent("div");
 
 function App() {
   const aleft = useRef(new AnimatedValue(0)).current;
+  const aleftfollow = useRef(new AnimatedValue(0)).current;
 
   return (
     <>
       <div
-        onClick={() => spring(aleft, { toValue: 500 }).start()}
+        onMouseMove={(e) => {
+          spring(aleft, { toValue: e.clientX }).start();
+          spring(aleftfollow, { toValue: aleft }).start();
+        }}
         style={{
           height: 100,
           background: "#e1e1e1",
@@ -22,7 +26,6 @@ function App() {
         DRAG MOUSE HERE
       </div>
       <ADiv
-        ref={(re) => console.log(re)}
         style={{
           width: aleft.interpolate({
             inputRange: [0, 500],
@@ -32,7 +35,18 @@ function App() {
           backgroundColor: "#3399ff",
           position: "relative",
           left: aleft,
-          display: "flex",
+        }}
+      />
+      <ADiv
+        style={{
+          width: aleft.interpolate({
+            inputRange: [0, 500],
+            outputRange: [100, 200],
+          }),
+          height: 100,
+          backgroundColor: "#ff0000",
+          position: "relative",
+          left: aleftfollow,
         }}
       />
     </>
