@@ -28,6 +28,7 @@ function _flush(rootNode: AnimatedValue): void {
  */
 export class AnimatedValue extends AnimatedWithChildren {
   _value: number;
+  _startingValue: number;
   _offset: number;
   _animation: Animation | null;
   _tracking: Animated | null;
@@ -35,7 +36,7 @@ export class AnimatedValue extends AnimatedWithChildren {
 
   constructor(value: number) {
     super();
-    this._value = value;
+    this._startingValue = this._value = value;
     this._offset = 0;
     this._animation = null;
     this._listeners = {};
@@ -108,6 +109,14 @@ export class AnimatedValue extends AnimatedWithChildren {
     this._animation && this._animation.stop();
     this._animation = null;
     callback && callback(this.__getValue());
+  }
+
+  /**
+   * Stops any animation and resets the value to its original
+   */
+  resetAnimation(callback?: (value: number) => void): void {
+    this.stopAnimation(callback);
+    this._value = this._startingValue;
   }
 
   /**

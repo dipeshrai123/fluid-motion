@@ -4,7 +4,7 @@ import { DecayAnimation } from "../node/DecayAnimation";
 import { CompositeAnimation } from "./types";
 
 export type DecayAnimationConfig = {
-  velocity: number | { x: number; y: number };
+  velocity: number;
   deceleration?: number;
 };
 
@@ -13,14 +13,17 @@ export const decay = function (
   config: DecayAnimationConfig
 ): CompositeAnimation {
   return {
-    start: function (callback?: EndCallback): void {
-      var singleValue: any = value;
-      var singleConfig: any = config;
+    start: function (callback?: EndCallback) {
+      const singleValue = value;
+      const singleConfig = config;
       singleValue.stopTracking();
       singleValue.animate(new DecayAnimation(singleConfig), callback);
     },
-    stop: function (): void {
+    stop: function () {
       value.stopAnimation();
+    },
+    reset: function () {
+      value.resetAnimation();
     },
   };
 };

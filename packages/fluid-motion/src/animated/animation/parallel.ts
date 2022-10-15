@@ -43,10 +43,17 @@ export const parallel = function (
         }
       });
     },
-    stop: function (): void {
+    stop: function () {
       animations.forEach((animation, idx) => {
         !hasEnded[idx] && animation.stop();
         hasEnded[idx] = true;
+      });
+    },
+    reset: function () {
+      animations.forEach((animation, idx) => {
+        animation.reset();
+        hasEnded[idx] = false;
+        doneCount = 0;
       });
     },
   };

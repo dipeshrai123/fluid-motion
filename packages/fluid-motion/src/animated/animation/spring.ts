@@ -23,9 +23,9 @@ export const spring = function (
   config: SpringAnimationConfig
 ): CompositeAnimation {
   return {
-    start: function (callback?: EndCallback): void {
-      var singleValue: any = value;
-      var singleConfig: any = config;
+    start: function (callback?: EndCallback) {
+      var singleValue = value;
+      var singleConfig = config;
       singleValue.stopTracking();
       if (config.toValue instanceof Animated) {
         singleValue.track(
@@ -41,8 +41,11 @@ export const spring = function (
         singleValue.animate(new SpringAnimation(singleConfig), callback);
       }
     },
-    stop: function (): void {
+    stop: function () {
       value.stopAnimation();
+    },
+    reset: function () {
+      value.resetAnimation();
     },
   };
 };

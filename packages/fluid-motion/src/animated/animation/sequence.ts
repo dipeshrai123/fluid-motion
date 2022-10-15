@@ -34,5 +34,13 @@ export const sequence = function (
         animations[current].stop();
       }
     },
+    reset: function () {
+      animations.forEach((animation, idx) => {
+        if (idx <= current) {
+          animation.reset();
+        }
+      });
+      current = 0;
+    },
   };
 };
