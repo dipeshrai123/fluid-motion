@@ -1,13 +1,5 @@
-import {
-  createAnimatedComponent,
-  AnimatedValue,
-  loop,
-  timing,
-  sequence,
-} from "fluid-motion";
+import { AnimatedValue, loop, timing, sequence, animated } from "fluid-motion";
 import { useRef } from "react";
-
-const ADiv = createAnimatedComponent("div");
 
 function App() {
   const left = useRef(new AnimatedValue(0)).current;
@@ -29,7 +21,7 @@ function App() {
       >
         Animate Me
       </button>
-      <ADiv
+      <animated.div
         style={{
           width: left.interpolate({
             inputRange: [0, 500],
