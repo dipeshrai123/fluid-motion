@@ -12,9 +12,9 @@ import { Animated } from "./node/Animated";
 import { isFunction, updateRef, useForceUpdate } from "./helpers";
 import * as Global from "./global";
 
-type AnimatableComponent = React.ElementType | React.ComponentType<any>;
+export type AnimatableComponent = React.ElementType | React.ComponentType<any>;
 
-type AnimatableComponentProps<T extends AnimatableComponent> = Omit<
+export type AnimatableComponentProps<T extends AnimatableComponent> = Omit<
   {
     [property in keyof React.ComponentPropsWithoutRef<T>]:
       | React.ComponentPropsWithoutRef<T>[property]
