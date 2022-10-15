@@ -1,9 +1,11 @@
-import { animated } from "fluid-motion";
+import { createAnimatedComponent } from "fluid-motion";
 import {
   useAnimatedValue,
   withTiming,
   withSequence,
 } from "./react-ui-animate/useAnimatedValue";
+
+const ADiv = createAnimatedComponent("div");
 
 function App() {
   const a = useAnimatedValue(0);
@@ -30,13 +32,14 @@ function App() {
       >
         Animate Right
       </button>
-      <animated.div
+      <ADiv
         style={{
           width: 100,
           height: 100,
           backgroundColor: "#3399ff",
           position: "relative",
           left: a.value,
+          transform: "translateX(100px)",
         }}
       />
     </>
