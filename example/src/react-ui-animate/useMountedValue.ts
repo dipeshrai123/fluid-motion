@@ -1,4 +1,4 @@
-import { spring, AnimatedValue } from "fluid-motion";
+import { spring, Value } from "fluid-motion";
 import { useRef, useState } from "react";
 
 import { useClassicEffect } from "./useClassicEffect";
@@ -19,9 +19,7 @@ export const useMountedValue = (
     enter: config?.enter ?? 1,
     exit: config?.exit ?? 0,
   });
-  const animation = useRef(
-    new AnimatedValue(animationConfig.current.from)
-  ).current;
+  const animation = useRef(new Value(animationConfig.current.from)).current;
 
   useClassicEffect(() => {
     if (visible) {
@@ -39,7 +37,7 @@ export const useMountedValue = (
   }, [visible]);
 
   return function (
-    fn: (animation: AnimatedValue, mounted: boolean) => React.ReactNode
+    fn: (animation: Value, mounted: boolean) => React.ReactNode
   ) {
     return fn(animation, mounted);
   };

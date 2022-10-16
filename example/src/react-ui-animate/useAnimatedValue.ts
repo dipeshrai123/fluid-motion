@@ -1,5 +1,5 @@
 import {
-  AnimatedValue,
+  Value,
   sequence,
   spring,
   timing,
@@ -9,7 +9,7 @@ import {
 } from "fluid-motion";
 import { useRef } from "react";
 
-type Animation = (animatedValue: AnimatedValue) => {
+type Animation = (animatedValue: Value) => {
   start: (callback?: any) => void;
   reset: () => void;
   stop: () => void;
@@ -17,7 +17,7 @@ type Animation = (animatedValue: AnimatedValue) => {
 
 export const withTiming =
   (
-    toValue: number | AnimatedValue,
+    toValue: number | Value,
     config?: Omit<TimingAnimationConfig, "toValue">
   ): Animation =>
   (animatedValue) =>
@@ -25,7 +25,7 @@ export const withTiming =
 
 export const withSpring =
   (
-    toValue: number | AnimatedValue,
+    toValue: number | Value,
     config?: Omit<SpringAnimationConfig, "toValue">
   ): Animation =>
   (animatedValue) =>
@@ -42,7 +42,7 @@ export const withLoop =
     loop(animation(animatedValue), { iterations });
 
 export const useAnimatedValue = (value: number) => {
-  const animatedValue = useRef(new AnimatedValue(value)).current;
+  const animatedValue = useRef(new Value(value)).current;
 
   const targetObject: {
     value?: any;
@@ -58,7 +58,7 @@ export const useAnimatedValue = (value: number) => {
     },
     set: ({ value }, p, newValue: Animation) => {
       if (p === "value") {
-        if (value instanceof AnimatedValue && newValue) {
+        if (value instanceof Value && newValue) {
           newValue(value).start();
         }
 
