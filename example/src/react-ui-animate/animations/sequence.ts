@@ -1,6 +1,9 @@
-import { sequence, Value } from "fluid-motion";
+import { sequence } from "fluid-motion";
+import { Animation } from "./types";
 
 export const withSequence =
-  (...animations: Array<(animatedValue: Value) => any>) =>
-  (animatedValue: Value) =>
-    sequence(animations.map((a) => a(animatedValue))).start();
+  (...animations: Array<Animation>): Animation =>
+  (animatedValue) => ({
+    animation: sequence(animations.map((a) => a(animatedValue).animation)),
+    callback: () => false,
+  });

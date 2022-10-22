@@ -1,6 +1,6 @@
 import { useDrag } from "@use-gesture/react";
 import { animated } from "fluid-motion";
-import { withSpring } from "./animations";
+import { withSequence, withSpring } from "./animations";
 import { useAnimatedValue } from "./useAnimatedValue";
 
 function App() {
@@ -11,9 +11,7 @@ function App() {
       if (down) {
         a.value = withSpring(mx);
       } else {
-        a.value = withSpring(0, undefined, ({ finished }) => {
-          console.log("FINISHED", finished);
-        });
+        a.value = withSequence(withSpring(100), withSpring(0));
       }
     }
   );

@@ -1,3 +1,6 @@
 import { delay } from "fluid-motion";
+import { Animation } from "./types";
 
-export const withDelay = (time: number) => () => delay(time).start();
+export const withDelay =
+  (time: number): Animation =>
+  () => ({ animation: delay(time), callback: () => false });
