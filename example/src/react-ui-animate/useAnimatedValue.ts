@@ -1,6 +1,5 @@
 import { Value } from "fluid-motion";
 import { useRef } from "react";
-import { Animation } from "./animations/types";
 
 export const useAnimatedValue = (value: number) => {
   const animatedValue = useRef(new Value(value)).current;
@@ -17,10 +16,10 @@ export const useAnimatedValue = (value: number) => {
         return animatedValue;
       }
     },
-    set: ({ value }, p, newValue: Animation) => {
+    set: ({ value }, p, newValue) => {
       if (p === "value") {
         if (value instanceof Value && newValue) {
-          newValue(value).start();
+          newValue(value);
         }
 
         return true;

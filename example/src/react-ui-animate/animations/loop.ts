@@ -1,7 +1,6 @@
-import { loop } from "fluid-motion";
-import { Animation } from "./types";
+import { loop, Value } from "fluid-motion";
 
 export const withLoop =
-  (animation: Animation, iterations: number = -1): Animation =>
-  (animatedValue) =>
-    loop(animation(animatedValue), { iterations });
+  (animation: (animatedValue: Value) => any, iterations: number = -1) =>
+  (animatedValue: Value) =>
+    loop(animation(animatedValue), { iterations }).start();

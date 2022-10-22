@@ -1,7 +1,3 @@
 import { delay } from "fluid-motion";
-import { Animation } from "./types";
 
-export const withDelay =
-  (time: number): Animation =>
-  () =>
-    delay(time);
+export const withDelay = (time: number) => () => delay(time).start();

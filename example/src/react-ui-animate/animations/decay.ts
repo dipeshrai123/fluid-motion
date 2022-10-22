@@ -1,7 +1,5 @@
-import { DecayAnimationConfig, decay } from "fluid-motion";
-import { Animation } from "./types";
+import { DecayAnimationConfig, decay, Value } from "fluid-motion";
 
 export const withDecay =
-  (config: DecayAnimationConfig): Animation =>
-  (animatedValue) =>
-    decay(animatedValue, config);
+  (config: DecayAnimationConfig) => (animatedValue: Value) =>
+    decay(animatedValue, config).start();
