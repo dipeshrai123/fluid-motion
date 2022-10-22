@@ -1,4 +1,4 @@
-import { animated, Value, loop, timing, sequence } from "fluid-motion";
+import { animated, Value, spring } from "fluid-motion";
 import { useRef } from "react";
 
 function App() {
@@ -8,25 +8,14 @@ function App() {
     <>
       <button
         onClick={() => {
-          timing(a, { toValue: 0 }).start();
+          spring(a, { toValue: 0 }).start();
         }}
       >
         Animate Left
       </button>
       <button
         onClick={() => {
-          sequence([
-            loop(
-              sequence([
-                timing(a, { toValue: 1, duration: 50 }),
-                timing(a, { toValue: -1, duration: 50 }),
-              ]),
-              {
-                iterations: 5,
-              }
-            ),
-            timing(a, { toValue: 0, duration: 50 }),
-          ]).start();
+          spring(a, { toValue: 200 }).start();
         }}
       >
         Animate Right
@@ -37,10 +26,14 @@ function App() {
           width: 100,
           height: 100,
           backgroundColor: "#3399ff",
-          position: "relative",
-          transform: a.interpolate({
-            inputRange: [-1, 0, 1],
-            outputRange: ["rotate(-10deg)", "rotate(0deg)", "rotate(10deg)"],
+          translateX: a,
+          scale: a.interpolate({
+            inputRange: [0, 500],
+            outputRange: [1, 1.2],
+          }),
+          skewX: a.interpolate({
+            inputRange: [0, 500],
+            outputRange: [0, 100],
           }),
         }}
       />

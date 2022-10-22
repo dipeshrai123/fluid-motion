@@ -1,3 +1,5 @@
+import * as Global from "../global";
+
 const isCustomPropRE = /^--/;
 
 type Value = string | number | boolean | null;
@@ -50,10 +52,13 @@ export const applyAnimatedValues = {
       instance.textContent = children;
     }
 
+    const { nonTransformStyles, transformStyles } =
+      Global.separateTransformStyles(style);
+
     // Apply CSS styles
-    for (let name in style) {
-      if (style.hasOwnProperty(name)) {
-        const value = dangerousStyleValue(name, style[name]);
+    for (let name in nonTransformStyles) {
+      if (nonTransformStyles.hasOwnProperty(name)) {
+        const value = dangerousStyleValue(name, nonTransformStyles[name]);
         if (name === "float") name = "cssFloat";
         else if (isCustomPropRE.test(name)) {
           instance.style.setProperty(name, value);
@@ -62,6 +67,9 @@ export const applyAnimatedValues = {
         }
       }
     }
+
+    // Apply CSS transform styles
+    instance.style.transform = Global.getTransform(transformStyles);
 
     // Apply DOM attributes
     names.forEach((name, i) => {
@@ -85,7 +93,7 @@ export const applyAnimatedValues = {
   },
 };
 
-let isUnitlessNumber: { [key: string]: true } = {
+const isUnitlessNumber: { [key: string]: true } = {
   animationIterationCount: true,
   borderImageOutset: true,
   borderImageSlice: true,

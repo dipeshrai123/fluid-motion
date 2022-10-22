@@ -24,6 +24,11 @@ export type AnimatableComponentProps<T extends AnimatableComponent> = Omit<
 > & {
   style?: {
     [key in keyof React.CSSProperties]: React.CSSProperties[key] | Animated;
+  } & {
+    [key in keyof typeof Global.isStyleTransformKeys]?:
+      | number
+      | string
+      | Animated;
   };
 };
 
@@ -86,10 +91,15 @@ export function createAnimatedComponent<C extends AnimatableComponent>(
        * TODO: - create a custom function to retrieve the props
        * rather than using new AnimatedProps node ( creating new instance )
        */
-      const initialProps = useMemo(
-        () => new AnimatedProps(props, () => false).__getValue(),
-        [props]
-      );
+      const initialProps = useMemo(() => {
+        const p = new AnimatedProps(props, () => false).__getValue();
+
+        if ("style" in p) {
+          p["style"] = Global.parseTransformStyle(p["style"]);
+        }
+
+        return p;
+      }, [props]);
 
       return createElement(Component, { ...initialProps, ref });
     }
