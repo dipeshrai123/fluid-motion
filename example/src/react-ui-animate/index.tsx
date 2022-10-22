@@ -1,31 +1,33 @@
+import { useDrag } from "@use-gesture/react";
 import { animated } from "fluid-motion";
-import { useAnimatedValue, withTiming, withLoop } from "./useAnimatedValue";
+import { withDecay, withSpring } from "./animations";
+import { interpolate } from "./interpolate";
+import { useAnimatedValue } from "./useAnimatedValue";
 
 function App() {
   const a = useAnimatedValue(0);
 
+  const bind = useDrag(
+    ({ down, velocity: [vx], direction: [dx], offset: [ox] }) => {
+      if (down) {
+        a.value = withSpring(ox);
+      } else {
+        a.value = withDecay({ velocity: dx * vx });
+      }
+    }
+  );
+
   return (
     <>
-      <button
-        onClick={() => {
-          a.value = withTiming(0);
-        }}
-      >
-        Animate Left
-      </button>
-      <button
-        onClick={() => {
-          a.value = withLoop(withTiming(200), 5);
-        }}
-      >
-        Animate Right
-      </button>
-
       <animated.div
+        {...bind()}
         style={{
+          touchAction: "none",
           width: 100,
           height: 100,
-          backgroundColor: "#3399ff",
+          backgroundColor: interpolate(a.value, [0, 400], ["red", "blue"], {
+            extrapolate: "clamp",
+          }),
           position: "relative",
           left: a.value,
         }}
