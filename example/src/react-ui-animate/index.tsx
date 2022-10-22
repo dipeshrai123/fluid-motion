@@ -1,18 +1,19 @@
 import { useDrag } from "@use-gesture/react";
 import { animated } from "fluid-motion";
-import { withDecay, withSpring } from "./animations";
-import { interpolate } from "./interpolate";
+import { withSpring } from "./animations";
 import { useAnimatedValue } from "./useAnimatedValue";
 
 function App() {
   const a = useAnimatedValue(0);
 
   const bind = useDrag(
-    ({ down, velocity: [vx], direction: [dx], offset: [ox] }) => {
+    ({ down, velocity: [vx], direction: [dx], movement: [mx] }) => {
       if (down) {
-        a.value = withSpring(ox);
+        a.value = withSpring(mx);
       } else {
-        a.value = withDecay({ velocity: dx * vx });
+        a.value = withSpring(0, undefined, ({ finished }) => {
+          console.log("FINISHED", finished);
+        });
       }
     }
   );
@@ -25,11 +26,8 @@ function App() {
           touchAction: "none",
           width: 100,
           height: 100,
-          backgroundColor: interpolate(a.value, [0, 400], ["red", "blue"], {
-            extrapolate: "clamp",
-          }),
-          position: "relative",
-          left: a.value,
+          background: "#3399ff",
+          translateX: a.value,
         }}
       />
     </>
