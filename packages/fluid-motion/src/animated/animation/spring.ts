@@ -11,8 +11,6 @@ export type SpringAnimationConfig = {
   restDisplacementThreshold?: number;
   restSpeedThreshold?: number;
   velocity?: number;
-  bounciness?: number;
-  speed?: number;
   tension?: number;
   friction?: number;
   mass?: number;

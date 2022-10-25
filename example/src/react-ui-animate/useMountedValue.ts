@@ -1,12 +1,16 @@
-import { spring, Value } from "fluid-motion";
+import { Value } from "fluid-motion";
 import { useRef, useState } from "react";
 
+import { withSpring } from "./animations";
+import { useAnimatedValue } from "./useAnimatedValue";
 import { useClassicEffect } from "./useClassicEffect";
+
+import type { Animation } from "./animations/types";
 
 interface UseMountedValueConfig {
   from: number;
-  enter: number;
-  exit: number;
+  enter: Animation;
+  exit: Animation;
 }
 
 export const useMountedValue = (
@@ -16,29 +20,30 @@ export const useMountedValue = (
   const [mounted, setMounted] = useState(visible);
   const animationConfig = useRef({
     from: config?.from ?? 0,
-    enter: config?.enter ?? 1,
-    exit: config?.exit ?? 0,
+    enter: config?.enter ?? withSpring(1),
+    exit: config?.exit ?? withSpring(0),
   });
-  const animation = useRef(new Value(animationConfig.current.from)).current;
+  const animation = useAnimatedValue(animationConfig.current.from);
+  const enterAnimation = animationConfig.current.enter(animation.value);
+  const exitAnimation = animationConfig.current.exit(animation.value);
 
   useClassicEffect(() => {
     if (visible) {
       setMounted(true);
-      spring(animation, { toValue: animationConfig.current.enter }).start();
+      enterAnimation.animation.start(enterAnimation.callback);
     } else {
-      spring(animation, { toValue: animationConfig.current.exit }).start(
-        function ({ finished }) {
-          if (finished) {
-            setMounted(false);
-          }
+      exitAnimation.animation.start((result: { finished: boolean }) => {
+        exitAnimation.callback?.(result);
+        if (result.finished) {
+          setMounted(false);
         }
-      );
+      });
     }
   }, [visible]);
 
   return function (
-    fn: (animation: Value, mounted: boolean) => React.ReactNode
+    fn: (animation: { value: Value }, mounted: boolean) => React.ReactNode
   ) {
-    return fn(animation, mounted);
+    return fn({ value: animation.value }, mounted);
   };
 };

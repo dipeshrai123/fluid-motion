@@ -1,33 +1,36 @@
-import { useDrag } from "@use-gesture/react";
+import { useState } from "react";
 import { animated } from "fluid-motion";
-import { withSequence, withSpring } from "./animations";
-import { useAnimatedValue } from "./useAnimatedValue";
+
+import { useMountedValue } from "./useMountedValue";
+import { withSpring, withTiming } from "./animations";
 
 function App() {
-  const a = useAnimatedValue(0);
-
-  const bind = useDrag(
-    ({ down, velocity: [vx], direction: [dx], movement: [mx] }) => {
-      if (down) {
-        a.value = withSpring(mx);
-      } else {
-        a.value = withSequence(withSpring(100), withSpring(0));
-      }
-    }
-  );
+  const [open, setOpen] = useState(false);
+  const mv = useMountedValue(open, {
+    from: 0,
+    enter: withSpring(200, { friction: 10, tension: 300 }, (result) => {
+      console.log("ANIMATION COMPLETE", result);
+    }),
+    exit: withTiming(0, { duration: 5000 }),
+  });
 
   return (
     <>
-      <animated.div
-        {...bind()}
-        style={{
-          touchAction: "none",
-          width: 100,
-          height: 100,
-          background: "#3399ff",
-          translateX: a.value,
-        }}
-      />
+      <button onClick={() => setOpen((prev) => !prev)}>SHOW / HIDE</button>
+      {mv(
+        (translateX, mounted) =>
+          mounted && (
+            <animated.div
+              style={{
+                touchAction: "none",
+                width: 100,
+                height: 100,
+                background: "#3399ff",
+                translateX: translateX.value,
+              }}
+            />
+          )
+      )}
     </>
   );
 }
